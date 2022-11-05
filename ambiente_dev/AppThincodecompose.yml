@@ -1,0 +1,88 @@
+version: "3.2"
+services:
+
+  {{ENV}}{{APP}}db:
+    image: mariadb
+    ports:
+      - 4206:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD={{DATABASE_ROOT_PASSWORD}}
+    volumes:
+      - {{APP_VOL}}/database:/var/lib/mysql
+    networks:
+      - {{EnvoyAppThincodeNetwork}}
+    deploy:
+      placement:
+        constraints:
+          - node.hostname=={{ClusterNode}}
+      resources:
+        limits:
+          memory: {{RAM_appthincode_db}} 
+
+  {{ENV}}{{APP}}frontcentral:
+    image: front-tolbuildings:0.0.1
+    environment:
+      - 'BASE_URL_BACK={{BASE_URL}}:'
+      - SECURITY_SERVICE_PORT={{SECURITY_PORT_EXT}}
+      - USER_SERVICE_PORT={{USER_PORT_EXT}}
+    volumes:
+      - {{APP_VOL}}/front-central:/usr/share/nginx/html
+    networks:
+      - {{EnvoyAppThincodeNetwork}}
+    command: [ /bin/sh, '/usr/share/nginx/html/front-appthincode.sh']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname=={{ClusterNode}}
+      resources:
+        limits:
+          memory: {{RAM_appthincode_frontcentral}}
+
+  {{ENV}}{{APP}}security:
+    image: openjdk:8-jdk-alpine
+    environment:
+      - SECURITY_SERVICE_PORT={{SECURITY_PORT_INT}}
+      - ACTIVE_ENV={{ENV}}
+      - MARIA_DB_HOST={{ENV}}{{APP}}db
+      - MARIA_DB_PORT={{DATABASE_PORT}}
+      - SECURITY_SERVICE_URL={{ENV}}{{APP}}security
+    volumes:
+      - {{APP_VOL}}/security:/app
+    networks:
+      - {{EnvoyAppThincodeNetwork}}
+    command: ['java','-jar','/app/security_app-0.0.1-SNAPSHOT.jar']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname=={{ClusterNode}}
+      resources:
+        limits:
+          memory: {{RAM_appthincode_security}}
+  
+  {{ENV}}{{APP}}users:
+    image: openjdk:8-jdk-alpine
+    environment:
+      - USER_SERVICE_PORT={{USER_PORT_INT}}
+      - ACTIVE_ENV={{ENV}}
+      - MARIA_DB_HOST={{ENV}}{{APP}}db
+      - MARIA_DB_PORT={{DATABASE_PORT}}
+      - SECURITY_SERVICE_URL={{ENV}}{{APP}}security
+      - SECURITY_SERVICE_PORT={{SECURITY_PORT_INT}}
+      - RESOURCES=/app/
+    volumes:
+      - {{APP_VOL}}/users:/app
+    networks:
+      - {{EnvoyAppThincodeNetwork}}
+    command: ['java','-jar','/app/users-service-0.0.1-SNAPSHOT.jar']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname=={{ClusterNode}}
+      resources:
+        limits:
+          memory: {{RAM_appthincode_users}}
+    
+networks:
+    {{EnvoyAppThincodeNetwork}}:
+        external: true
+        

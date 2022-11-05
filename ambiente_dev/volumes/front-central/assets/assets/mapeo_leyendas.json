@@ -1,0 +1,48 @@
+{
+  "admin" :
+    { "map": [
+        { "item" :  [ "-",                   " " ] },
+        { "item" :  [ "administracion",      "Administración" ] },
+        { "item" :  [ "area geografica",     "Área geográfica" ] },
+        { "item" :  [ "catalogos",           "Catálogos" ] },
+        { "item" :  [ "experiencia En",      "Experiencia en puesto actual" ] },
+        { "item" :  [ "questionnaire",       "Encuestas" ] },
+        { "item" :  [ "/reportes/encuestas", "/Encuestas" ] },
+        { "item" :  [ "resultado",           "Evaluación" ] },
+        { "item" :  [ "seccion",             "Sección" ] },
+        { "item" :  [ "contrasena",          "contraseña" ] }
+      ]
+    },
+
+    "analista" :
+    { "map": [
+        { "item" :  [ "-",                             " " ] },
+        { "item" :  [ "questionnaire",                 "Encuestas" ] },
+        { "item" :  [ "/reportes",                     "" ] },
+        { "item" :  [ "/listado de-encuestas",         "" ] },
+        { "item" :  [ "/Encuestas-concluidas/[0-9]+$", "Evaluaciones" ] },
+        { "item" :  [ "/Cuestionario/Aplicacion",      "Evaluaciones/Respuestas" ] },
+        { "item" :  [ "/Resultado",                    "Evaluaciones/Evaluación" ] },
+        { "item" :  [ "/reportes/informe",             "Evaluaciones/Informe de resultados" ] },
+        { "item" :  [ "/[0-9]+$",                      "" ] }
+      ]
+    },
+
+    "encuestador" :
+    { "map": [
+        { "item" :  [ "-",                     " " ] },
+        { "item" :  [ "reportes/encuestas",    "Encuestas" ] },
+        { "item" :  [ "reportes/evaluacion",   "Encuestas" ] },
+        { "item" :  [ "reportes/resultado",    "Encuestas/Evaluación" ] }
+      ]
+    },
+
+  "encuestado" :
+    { "map": [
+      { "item" :  [ "-",                  " " ] },
+      { "item" :  [ "/cuestionarios",     "" ] },
+      { "item" :  [ "aplicar encuesta",   "Responder encuesta" ] },
+      { "item" :  [ "/[0-9]$",            "" ] }
+      ]
+    }
+}
