@@ -1,0 +1,90 @@
+version: "3.5"
+services:
+  devappthincodedb:
+    image: mariadb
+    ports:
+      - 4206:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - /srv/appthincode/volumes/database:/var/lib/mysql
+    networks:
+      - envoy-appthincode
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==srvcarports
+          - node.role==manager
+      resources:
+        limits:
+          memory: 260M
+  devappthincodefrontcentral:
+    image: front-appthincode:0.0.1
+    environment:
+      - 'BASE_URL_BACK=http://dev.appthincode.thincode.net:'
+      - SECURITY_SERVICE_PORT=80
+      - USER_SERVICE_PORT=80
+    volumes:
+      - /srv/appthincode/volumes/front-central:/usr/share/nginx/html
+    networks:
+      - envoy-appthincode
+    command: [ /bin/sh, '/usr/share/nginx/html/front-appthincode.sh']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==srvcarports
+          - node.role==manager
+      resources:
+        limits:
+          memory: 174M
+  devappthincodesecurity:
+    image: openjdk:8-jdk-alpine
+    environment:
+      - SECURITY_SERVICE_PORT=8090
+      - ACTIVE_ENV=DEV
+      - MARIA_DB_HOST=devappthincodedb
+      - MARIA_DB_PORT=3306
+      - SECURITY_SERVICE_URL=devappthincodesecurity
+      - AUTHORIZE_HOST=devappthincodesecurity
+      - GENPASSWDMAIL_HOST=devappthincodesecurity
+    volumes:
+      - /srv/appthincode/volumes/security:/app
+    networks:
+      - envoy-appthincode
+    command: [ /bin/bash, '/app/security.sh']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==srvcarports
+          - node.role==manager
+      resources:
+        limits:
+          memory: 400M
+  devappthincodeusers:
+    image: openjdk:8-jdk-alpine
+    environment:
+      - USER_SERVICE_PORT=8092
+      - ACTIVE_ENV=DEV
+      - MARIA_DB_HOST=devappthincodedb
+      - MARIA_DB_PORT=3306
+      - SECURITY_SERVICE_URL=devappthincodesecurity
+      - SECURITY_SERVICE_PORT=8090
+      - AUTHORIZE_HOST=devappthincodesecurity
+      - GENPASSWDMAIL_HOST=devappthincodesecurity
+      - RESOURCES=/app/
+    volumes:
+      - /srv/appthincode/volumes/database/users:/app
+    networks:
+      - envoy-appthincode
+    command: [ /bin/bash, '/app/users.sh']
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==srvcarports
+          - node.role==manager
+      resources:
+        limits:
+          memory: 400M
+networks:
+    envoy-appthincode:
+        external: true

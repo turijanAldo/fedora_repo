@@ -1,0 +1,5 @@
+[safe]
+	directory = /srv/appthincode
+[user]
+	email = aldo.turijan@thincode.com
+	name = turijana

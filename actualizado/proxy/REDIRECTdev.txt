@@ -1,0 +1,8 @@
+/api/security
+devappthincodesecurity:8090
+
+/api/users
+devappthincodeusers:8092
+
+/
+devappthincodefrontcentral:80

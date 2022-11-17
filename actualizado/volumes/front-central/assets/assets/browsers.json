@@ -1,0 +1,25 @@
+{
+    "browsers": [{
+            "key": "Opera",
+            "value": "Opera"
+        }, {
+            "key": "OPR",
+            "value": "Opera"
+        }, {
+            "key": "Edg",
+            "value": "Edge Chromium"
+        }, {
+            "key": "Chrome",
+            "value": "Chrome"
+        }, {
+            "key": "Firefox",
+            "value": "Firefox"
+        }, {
+            "key": "Safari",
+            "value": "Safari"
+        }, {
+            "key": "MSIE",
+            "value": "IE"
+        }
+    ]
+}
